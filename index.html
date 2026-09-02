@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soal Evaluasi Interaktif - Bahasa Indonesia Kelas 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F6F4;
+    --card:#FFFFFF;
+    --ink:#1B2E2C;
+    --ink-soft:#5B6E6B;
+    --teal:#1B6E68;
+    --teal-deep:#124F4A;
+    --teal-tint:#E3F2EF;
+    --gold:#E8A33D;
+    --gold-tint:#FCEFDA;
+    --coral:#E15B45;
+    --coral-tint:#FBE7E2;
+    --line:#DCE6E3;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Baloo 2', 'Plus Jakarta Sans', sans-serif;
+    font-weight:700;
+    color:var(--teal-deep);
+    margin:0;
+  }
+  #app{
+    max-width:760px;
+    margin:0 auto;
+    padding:28px 18px 80px;
+    min-height:100vh;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:22px;
+  }
+  .topbar .mark{
+    width:44px;height:44px;border-radius:12px;
+    background:var(--teal);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .topbar .mark svg{width:24px;height:24px;}
+  .topbar .titles h1{font-size:19px;line-height:1.25;}
+  .topbar .titles p{margin:2px 0 0;font-size:13px;color:var(--ink-soft);}
+
+  /* ---- stepper ---- */
+  .stepper{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:26px;
+  }
+  .step{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .step .bar{
+    height:6px;
+    border-radius:4px;
+    background:var(--line);
+    overflow:hidden;
+  }
+  .step .bar > span{
+    display:block;height:100%;width:0%;
+    background:var(--teal);
+    transition:width .35s ease;
+  }
+  .step.done .bar > span{width:100%;}
+  .step.current .bar > span{width:60%;}
+  .step label{
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    letter-spacing:.01em;
+  }
+  .step.current label{color:var(--teal-deep);}
+
+  /* ---- cards / screens ---- */
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:26px 24px;
+    box-shadow:0 1px 2px rgba(18,79,74,.06), 0 8px 24px rgba(18,79,74,.05);
+    margin-bottom:18px;
+  }
+  .screen-title{font-size:22px;margin-bottom:6px;}
+  .screen-sub{color:var(--ink-soft);font-size:14.5px;margin:0 0 18px;}
+
+  /* ---- start screen ---- */
+  .hero{
+    text-align:center;
+    padding:10px 6px 6px;
+  }
+  .hero .badge{
+    display:inline-block;
+    background:var(--gold-tint);
+    color:#96631A;
+    font-weight:700;
+    font-size:12.5px;
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  .hero h2{font-size:26px;line-height:1.3;margin-bottom:10px;}
+  .hero p.lead{color:var(--ink-soft);font-size:15px;max-width:480px;margin:0 auto 22px;}
+  .field{
+    text-align:left;
+    margin-bottom:10px;
+  }
+  .field label{font-size:13px;font-weight:600;color:var(--ink-soft);display:block;margin-bottom:6px;}
+  .field input{
+    width:100%;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    font-family:inherit;
+    font-size:15px;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .field input:focus{outline:2px solid var(--teal); outline-offset:1px; border-color:var(--teal);}
+  .overview{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin:22px 0 6px;
+  }
+  .overview .item{
+    background:var(--teal-tint);
+    border-radius:12px;
+    padding:14px 10px;
+    text-align:center;
+  }
+  .overview .item strong{display:block;font-size:20px;color:var(--teal-deep);font-family:'Baloo 2';}
+  .overview .item span{font-size:11.5px;color:var(--ink-soft);}
+
+  /* ---- buttons ---- */
+  .btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
+    font-weight:700;
+    font-size:15px;
+    padding:13px 22px;
+    border-radius:12px;
+    transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--teal); color:#fff;}
+  .btn-primary:hover{box-shadow:0 6px 16px rgba(27,110,104,.28);}
+  .btn-primary:disabled{opacity:.45; cursor:not-allowed; box-shadow:none;}
+  .btn-ghost{background:transparent; color:var(--teal-deep); border:1.5px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--teal);}
+  .btn-row{display:flex; justify-content:space-between; align-items:center; margin-top:24px; gap:10px;}
+  .btn-row .spacer{flex:1;}
+  .btn-wide{width:100%;}
+
+  /* ---- question blocks ---- */
+  .qblock{margin-bottom:26px;}
+  .qblock:last-child{margin-bottom:4px;}
+  .qhead{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    margin-bottom:12px;
+  }
+  .qnum{
+    flex-shrink:0;
+    width:28px;height:28px;
+    border-radius:8px;
+    background:var(--teal-tint);
+    color:var(--teal-deep);
+    font-family:'Baloo 2';
+    font-weight:700;
+    font-size:14px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .qtext{font-size:15.5px;font-weight:600; padding-top:3px; white-space:pre-line;}
+  .options{display:flex; flex-direction:column; gap:8px; padding-left:38px;}
+  .opt{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:11px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:var(--paper);
+    cursor:pointer;
+    font-size:14.5px;
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .opt:hover{border-color:#B9D3CE;}
+  .opt .ind{
+    flex-shrink:0;
+    width:20px;height:20px;
+    border:2px solid #C4D3D0;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .opt .ind.round{border-radius:50%;}
+  .opt .ind.square{border-radius:6px;}
+  .opt .ind svg{width:12px;height:12px;opacity:0;}
+  .opt.selected{border-color:var(--teal); background:var(--teal-tint);}
+  .opt.selected .ind{border-color:var(--teal); background:var(--teal);}
+  .opt.selected .ind svg{opacity:1;}
+
+  /* ---- kategori (chip) rows ---- */
+  .krow{margin-bottom:16px;}
+  .krow .stmt{
+    font-size:14.5px;
+    padding:10px 12px;
+    background:var(--paper);
+    border-radius:10px 10px 0 0;
+    border:1.5px solid var(--line);
+    border-bottom:none;
+  }
+  .chiprow{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:10px 12px 12px;
+    border:1.5px solid var(--line);
+    border-top:none;
+    border-radius:0 0 10px 10px;
+  }
+  .chip{
+    border:1.5px solid var(--line);
+    background:#fff;
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    color:var(--ink-soft);
+  }
+  .chip.selected{
+    background:var(--teal);
+    border-color:var(--teal);
+    color:#fff;
+  }
+
+  .hint{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    background:var(--gold-tint);
+    border-radius:10px;
+    padding:8px 12px;
+    margin-bottom:16px;
+  }
+
+  /* ---- result screen ---- */
+  .score-hero{
+    text-align:center;
+    padding:16px 6px 8px;
+  }
+  .score-ring{
+    width:140px;height:140px;
+    border-radius:50%;
+    margin:0 auto 16px;
+    display:flex;align-items:center;justify-content:center;
+    background:conic-gradient(var(--teal) calc(var(--pct)*1%), var(--line) 0);
+  }
+  .score-ring .inner{
+    width:112px;height:112px;
+    border-radius:50%;
+    background:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .score-ring .inner strong{font-family:'Baloo 2'; font-size:28px; color:var(--teal-deep);}
+  .score-ring .inner span{font-size:11.5px; color:var(--ink-soft);}
+  .score-msg{font-size:16px; font-weight:700; color:var(--teal-deep); margin-bottom:4px;}
+  .score-name{color:var(--ink-soft); font-size:13.5px; margin-bottom:18px;}
+
+  .breakdown{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .breakdown .item{
+    background:var(--paper);
+    border-radius:12px;
+    padding:14px 8px;
+    text-align:center;
+  }
+  .breakdown .item strong{display:block; font-family:'Baloo 2'; font-size:18px; color:var(--teal-deep);}
+  .breakdown .item span{font-size:11px; color:var(--ink-soft);}
+
+  .review-item{
+    border-bottom:1px solid var(--line);
+    padding:14px 0;
+  }
+  .review-item:last-child{border-bottom:none;}
+  .review-item .rtext{font-size:14px; font-weight:600; margin-bottom:8px; white-space:pre-line;}
+  .review-row{
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+    font-size:13px;
+    padding:6px 10px;
+    border-radius:9px;
+    margin-bottom:5px;
+  }
+  .review-row.ok{background:var(--teal-tint); color:var(--teal-deep);}
+  .review-row.bad{background:var(--coral-tint); color:#9A3A29;}
+  .review-row .tag{font-weight:700; flex-shrink:0;}
+
+  .section-label{
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--teal);
+    margin:24px 0 10px;
+  }
+  .section-label:first-child{margin-top:0;}
+
+  footer.note{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:12px;
+    margin-top:22px;
+  }
+
+  @media (max-width:480px){
+    .options{padding-left:0;}
+    .overview{grid-template-columns:1fr 1fr 1fr; gap:8px;}
+    .card{padding:20px 16px;}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ============ DATA ============ */
+const PG = [
+  { q:"Teks yang berisi penjelasan mengenai suatu proses yang berkaitan dengan suatu kejadian atau peristiwa disebut ....",
+    opts:["teks eksplanasi ilmiah","teks narasi","teks deskripsi","teks prosedur"], ans:0 },
+  { q:"Bagian teks eksplanasi ilmiah yang berisi informasi singkat mengenai topik permasalahan dan biasanya terletak di awal teks disebut ....",
+    opts:["deretan penjelas","pernyataan umum","simpulan","penutup"], ans:1 },
+  { q:"Bagian teks eksplanasi ilmiah yang berisi uraian mengenai proses dari peristiwa atau kejadian secara lebih terperinci disebut ....",
+    opts:["pernyataan umum","simpulan","deretan penjelas","pendahuluan"], ans:2 },
+  { q:"Bagian penutup teks eksplanasi ilmiah yang berisi pendapat singkat penulis tentang topik yang dibahas disebut ....",
+    opts:["pernyataan umum","deretan penjelas","simpulan","isi"], ans:2 },
+  { q:"Berikut ini yang bukan termasuk ciri-ciri kalimat fakta adalah ....",
+    opts:["memiliki data akurat","bersifat objektif","benar-benar terjadi","mengandung pendapat pribadi"], ans:3 },
+  { q:"Kalimat yang bersifat subjektif dan mengandung pendapat pribadi seseorang disebut kalimat ....",
+    opts:["fakta","opini","ajakan","perintah"], ans:1 },
+  { q:"Perhatikan kalimat berikut!\n\u201cPonsel pintar dapat digunakan untuk mengakses internet dan bermain berbagai gim daring.\u201d\nKalimat tersebut termasuk kalimat ....",
+    opts:["opini karena bersifat subjektif","fakta karena berisi hal yang benar-benar terjadi","opini karena mengandung kata relatif","fakta karena mengandung pendapat pribadi"], ans:1 },
+  { q:"Kata-kata seperti paling, lebih, agak, sangat, dan biasanya sering muncul dalam kalimat ....",
+    opts:["fakta","opini","eksplanasi","laporan"], ans:1 },
+  { q:"Teks yang berisi kegiatan seseorang dalam melakukan suatu perjalanan atau kunjungan ke suatu tempat dan disusun berdasarkan pengamatan langsung penulis disebut ....",
+    opts:["teks eksplanasi ilmiah","catatan perjalanan","teks berita","teks ulasan"], ans:1 },
+  { q:"Langkah pertama yang harus dilakukan saat menulis teks eksplanasi ilmiah adalah ....",
+    opts:["menentukan ide pokok dan ide pendukung","mengumpulkan informasi sebanyak-banyaknya tentang topik","merangkai paragraf sesuai susunan teks","memeriksa tanda baca dan ejaan"], ans:1 },
+];
+
+const MCMA = [
+  { q:"Berikut ini yang termasuk ciri-ciri kalimat fakta adalah ....",
+    opts:["Memiliki data akurat, seperti bilangan statistik, tanggal, dan waktu kejadian","Bersifat objektif dan telah diakui kebenarannya oleh banyak pihak","Mengandung pendapat pribadi yang belum pasti kebenarannya"], ans:[0,1] },
+  { q:"Berikut ini yang termasuk ciri-ciri kalimat opini adalah ....",
+    opts:["Bersifat subjektif karena hanya menurut salah satu pihak","Benar-benar terjadi dan dapat dibuktikan kebenarannya","Memiliki kata yang bersifat relatif, seperti paling, lebih, dan sangat"], ans:[0,2] },
+  { q:"Berikut ini yang termasuk bagian struktur teks eksplanasi ilmiah adalah ....",
+    opts:["Pernyataan umum","Deretan penjelas","Simpulan"], ans:[0,1,2] },
+  { q:"Berikut ini yang termasuk hal-hal yang harus ada pada catatan perjalanan adalah ....",
+    opts:["Nama kegiatan dan lokasi kunjungan","Waktu kunjungan dan hasil kunjungan","Nomor telepon penulis catatan"], ans:[0,1] },
+  { q:"Berikut ini yang termasuk langkah-langkah meringkas teks eksplanasi ilmiah adalah ....",
+    opts:["Mencermati teks yang dibaca atau didengar","Mengidentifikasi ide pokok pada setiap struktur teks","Menambahkan opini pribadi ke dalam ringkasan"], ans:[0,1] },
+];
+
+const KATEGORI = [
+  { q:"Tentukan apakah setiap pernyataan berikut termasuk kalimat fakta atau opini.",
+    labels:["Fakta","Opini"],
+    rows:[
+      { t:"Ponsel pintar dapat digunakan untuk mengakses internet dan mencari informasi.", a:0 },
+      { t:"Penggunaan ponsel pintar yang terlalu sering dapat mengganggu konsentrasi dan interaksi sosial.", a:1 },
+      { t:"Alat transportasi modern seperti kereta api dan pesawat terbang diciptakan dengan memanfaatkan teknologi yang terus berkembang.", a:0 },
+      { t:"Kita harus menggunakan ponsel pintar dengan bijak agar tidak mengorbankan waktu bersama keluarga.", a:1 },
+    ]},
+  { q:'Perhatikan kutipan teks "Globalisasi dan Perkembangan Teknologi Transportasi". Tentukan bagian struktur teksnya.',
+    labels:["Pernyataan Umum","Deretan Penjelas","Simpulan"],
+    rows:[
+      { t:"Perkembangan teknologi pada era globalisasi terjadi dalam berbagai bidang.", a:0 },
+      { t:"Masyarakat dapat bepergian menggunakan sepeda motor, mobil, kereta api, kapal feri, ataupun pesawat terbang.", a:1 },
+      { t:"Perkembangan teknologi merupakan penanda adanya arus globalisasi.", a:2 },
+    ]},
+  { q:"Tentukan apakah setiap pernyataan berikut termasuk kalimat fakta atau opini.",
+    labels:["Fakta","Opini"],
+    rows:[
+      { t:"Petani dapat membajak sawah menggunakan traktor yang dijalankan mesin.", a:0 },
+      { t:"Traktor jauh lebih praktis digunakan dibandingkan dengan cangkul.", a:1 },
+      { t:"Dahulu, petani menggunakan cangkul untuk membajak sawah.", a:0 },
+      { t:"Sebaiknya semua petani beralih menggunakan traktor agar pekerjaan lebih cepat selesai.", a:1 },
+    ]},
+  { q:"Tentukan apakah setiap hal berikut termasuk atau tidak termasuk unsur yang harus ada pada catatan perjalanan.",
+    labels:["Termasuk","Tidak Termasuk"],
+    rows:[
+      { t:"Nama kegiatan", a:0 },
+      { t:"Lokasi kunjungan", a:0 },
+      { t:"Waktu kunjungan", a:0 },
+      { t:"Nomor telepon penulis catatan perjalanan", a:1 },
+    ]},
+  { q:"Perhatikan kutipan teks eksplanasi ilmiah tentang ponsel pintar. Tentukan bagian struktur teksnya.",
+    labels:["Pernyataan Umum","Deretan Penjelas","Simpulan"],
+    rows:[
+      { t:"Ponsel pintar adalah alat yang dapat membantu kita berbicara dengan teman dan keluarga, mencari informasi, dan bermain gim daring.", a:0 },
+      { t:"Dahulu, ponsel hanya dapat digunakan untuk mengirim pesan dan melakukan panggilan telepon.", a:1 },
+      { t:"Dengan demikian, teknologi ponsel pintar dapat membantu kita dalam banyak hal, namun kita perlu menggunakannya dengan bijak.", a:2 },
+    ]},
+];
+
+/* ============ STATE ============ */
+let state = {
+  screen: 'start',
+  name: '',
+  pg: Array(PG.length).fill(null),
+  mcma: MCMA.map(()=> new Set()),
+  kategori: KATEGORI.map(k => Array(k.rows.length).fill(null)),
+};
+
+const LETTERS = ['A','B','C','D'];
+const CHECK_SVG = '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8.5L6.2 11.7L13 4" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ============ HELPERS ============ */
+function esc(s){
+  const d = document.createElement('div');
+  d.innerText = s;
+  return d.innerHTML;
+}
+
+function stepperHTML(activeKey){
+  const steps = [
+    {key:'A', label:'Pilihan Ganda'},
+    {key:'B', label:'PGK Ganda'},
+    {key:'C', label:'PGK Kategori'},
+    {key:'result', label:'Hasil'},
+  ];
+  const order = ['A','B','C','result'];
+  const activeIdx = order.indexOf(activeKey);
+  return `<div class="stepper">` + steps.map((s,i)=>{
+    let cls = 'step';
+    if(i < activeIdx) cls += ' done';
+    else if(i === activeIdx) cls += ' current';
+    return `<div class="${cls}"><div class="bar"><span></span></div><label>${s.label}</label></div>`;
+  }).join('') + `</div>`;
+}
+
+function topbarHTML(){
+  return `<div class="topbar">
+    <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H12V20H5.5C4.7 20 4 19.3 4 18.5V5.5Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 4H18.5C19.3 4 20 4.7 20 5.5V18.5C20 19.3 19.3 20 18.5 20H12" stroke="white" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 8H14M8 11H14" stroke="white" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+    <div class="titles">
+      <h1>Soal Evaluasi Interaktif</h1>
+      <p>Bahasa Indonesia Kelas 6 &middot; Bab 3: Berbagai Inovasi pada Era Globalisasi</p>
+    </div>
+  </div>`;
+}
+
+/* ============ RENDER: START ============ */
+function renderStart(){
+  return `
+  ${topbarHTML()}
+  <div class="card hero">
+    <span class="badge">Bab 3 &middot; Fase C</span>
+    <h2>Yuk, kerjakan soal evaluasinya!</h2>
+    <p class="lead">Soal ini terdiri dari tiga bagian yang membahas teks eksplanasi ilmiah, fakta &amp; opini, dan catatan perjalanan. Kerjakan dengan santai dan teliti, ya.</p>
+    <div class="field" style="max-width:320px;margin:0 auto;">
+      <label for="nameInput">Nama kamu</label>
+      <input id="nameInput" type="text" placeholder="Tulis namamu di sini" value="${esc(state.name)}" />
+    </div>
+    <div class="overview">
+      <div class="item"><strong>10</strong><span>Pilihan Ganda</span></div>
+      <div class="item"><strong>5</strong><span>PGK Ganda</span></div>
+      <div class="item"><strong>5</strong><span>PGK Kategori</span></div>
+    </div>
+    <button class="btn btn-primary btn-wide" id="startBtn" style="margin-top:18px;">Mulai Mengerjakan</button>
+  </div>
+  <footer class="note">Jawabanmu tidak dikirim ke mana pun &mdash; semua dikerjakan langsung di halaman ini.</footer>
+  `;
+}
+
+/* ============ RENDER: SECTION A (PG) ============ */
+function renderA(){
+  const answeredCount = state.pg.filter(v=>v!==null).length;
+  const qs = PG.map((item, qi)=>{
+    const opts = item.opts.map((opt, oi)=>{
+      const sel = state.pg[qi] === oi;
+      return `<div class="opt${sel?' selected':''}" data-q="${qi}" data-o="${oi}">
+        <span class="ind round">${sel?CHECK_SVG:''}</span>
+        <span><strong>${LETTERS[oi]}.</strong> ${esc(opt)}</span>
+      </div>`;
+    }).join('');
+    return `<div class="qblock">
+      <div class="qhead"><div class="qnum">${qi+1}</div><div class="qtext">${esc(item.q)}</div></div>
+      <div class="options">${opts}</div>
+    </div>`;
+  }).join('');
+
+  return `
+  ${topbarHTML()}
+  ${stepperHTML('A')}
+  <div class="card">
+    <div class="screen-title">A. Pilihan Ganda</div>
+    <p class="screen-sub">Pilih satu jawaban yang paling tepat untuk setiap soal. (${answeredCount}/${PG.length} terjawab)</p>
+    ${qs}
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="backBtn">Kembali</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="nextBtn">Lanjut ke Bagian B</button>
+    </div>
+  </div>
+  `;
+}
+
+/* ============ RENDER: SECTION B (MCMA) ============ */
+function renderB(){
+  const answeredCount = state.mcma.filter(s=>s.size>0).length;
+  const qs = MCMA.map((item, qi)=>{
+    const opts = item.opts.map((opt, oi)=>{
+      const sel = state.mcma[qi].has(oi);
+      return `<div class="opt${sel?' selected':''}" data-q="${qi}" data-o="${oi}">
+        <span class="ind square">${sel?CHECK_SVG:''}</span>
+        <span><strong>${LETTERS[oi]}.</strong> ${esc(opt)}</span>
+      </div>`;
+    }).join('');
+    return `<div class="qblock">
+      <div class="qhead"><div class="qnum">${qi+1}</div><div class="qtext">${esc(item.q)}</div></div>
+      <div class="options">${opts}</div>
+    </div>`;
+  }).join('');
+
+  return `
+  ${topbarHTML()}
+  ${stepperHTML('B')}
+  <div class="card">
+    <div class="screen-title">B. Pilihan Ganda Kompleks</div>
+    <p class="screen-sub">Centang semua jawaban yang benar &mdash; setiap soal bisa punya lebih dari satu jawaban tepat. (${answeredCount}/${MCMA.length} terjawab)</p>
+    ${qs}
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="backBtn">Kembali</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="nextBtn">Lanjut ke Bagian C</button>
+    </div>
+  </div>
+  `;
+}
+
+/* ============ RENDER: SECTION C (KATEGORI) ============ */
+function renderC(){
+  let totalRows = 0, answeredRows = 0;
+  const qs = KATEGORI.map((item, qi)=>{
+    const rows = item.rows.map((r, ri)=>{
+      totalRows++;
+      if(state.kategori[qi][ri] !== null) answeredRows++;
+      const chips = item.labels.map((lab, li)=>{
+        const sel = state.kategori[qi][ri] === li;
+        return `<div class="chip${sel?' selected':''}" data-q="${qi}" data-r="${ri}" data-l="${li}">${esc(lab)}</div>`;
+      }).join('');
+      return `<div class="krow">
+        <div class="stmt">${esc(r.t)}</div>
+        <div class="chiprow">${chips}</div>
+      </div>`;
+    }).join('');
+    return `<div class="qblock">
+      <div class="qhead"><div class="qnum">${qi+1}</div><div class="qtext">${esc(item.q)}</div></div>
+      ${rows}
+    </div>`;
+  }).join('');
+
+  return `
+  ${topbarHTML()}
+  ${stepperHTML('C')}
+  <div class="card">
+    <div class="screen-title">C. Pilihan Ganda Kompleks (Kategori)</div>
+    <p class="screen-sub">Ketuk kategori yang paling sesuai untuk setiap pernyataan. (${answeredRows}/${totalRows} terjawab)</p>
+    ${qs}
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="backBtn">Kembali</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="nextBtn">Lihat Hasil</button>
+    </div>
+  </div>
+  `;
+}
+
+/* ============ SCORING ============ */
+function computeScore(){
+  let scoreA = 0;
+  PG.forEach((item, qi)=>{ if(state.pg[qi] === item.ans) scoreA++; });
+
+  let scoreB = 0;
+  MCMA.forEach((item, qi)=>{
+    const sel = state.mcma[qi];
+    const ansSet = new Set(item.ans);
+    const exact = sel.size === ansSet.size && [...sel].every(v=>ansSet.has(v));
+    if(exact) scoreB++;
+  });
+
+  let scoreC = 0, maxC = 0;
+  KATEGORI.forEach((item, qi)=>{
+    item.rows.forEach((r, ri)=>{
+      maxC++;
+      if(state.kategori[qi][ri] === r.a) scoreC++;
+    });
+  });
+
+  const maxA = PG.length, maxB = MCMA.length;
+  const total = scoreA + scoreB + scoreC;
+  const max = maxA + maxB + maxC;
+  return { scoreA, maxA, scoreB, maxB, scoreC, maxC, total, max, pct: Math.round((total/max)*100) };
+}
+
+function scoreMessage(pct){
+  if(pct >= 90) return "Luar biasa! Kamu menguasai materi ini dengan sangat baik.";
+  if(pct >= 75) return "Bagus sekali! Pemahamanmu sudah kuat.";
+  if(pct >= 60) return "Cukup baik, terus berlatih supaya makin mantap.";
+  return "Jangan menyerah! Coba baca lagi materinya, lalu kerjakan ulang.";
+}
+
+/* ============ RENDER: RESULT ============ */
+function renderResult(){
+  const s = computeScore();
+
+  const reviewA = PG.map((item, qi)=>{
+    const userIdx = state.pg[qi];
+    const rows = item.opts.map((opt, oi)=>{
+      if(oi === item.ans){
+        return `<div class="review-row ok"><span class="tag">Kunci</span><span>${LETTERS[oi]}. ${esc(opt)}</span></div>`;
+      }
+      if(oi === userIdx && userIdx !== item.ans){
+        return `<div class="review-row bad"><span class="tag">Jawabanmu</span><span>${LETTERS[oi]}. ${esc(opt)}</span></div>`;
+      }
+      return '';
+    }).join('');
+    const unanswered = userIdx === null ? `<div class="review-row bad"><span class="tag">Jawabanmu</span><span>Belum dijawab</span></div>` : '';
+    return `<div class="review-item"><div class="rtext">${qi+1}. ${esc(item.q)}</div>${rows}${unanswered}</div>`;
+  }).join('');
+
+  const reviewB = MCMA.map((item, qi)=>{
+    const sel = state.mcma[qi];
+    const ansSet = new Set(item.ans);
+    const rows = item.opts.map((opt, oi)=>{
+      const isAns = ansSet.has(oi);
+      const isSel = sel.has(oi);
+      if(!isAns && !isSel) return '';
+      const ok = isAns === isSel;
+      const tag = isAns ? 'Kunci' : 'Pilihanmu';
+      return `<div class="review-row ${ok?'ok':'bad'}"><span class="tag">${tag}</span><span>${LETTERS[oi]}. ${esc(opt)}</span></div>`;
+    }).join('');
+    return `<div class="review-item"><div class="rtext">${qi+1}. ${esc(item.q)}</div>${rows}</div>`;
+  }).join('');
+
+  const reviewC = KATEGORI.map((item, qi)=>{
+    const rows = item.rows.map((r, ri)=>{
+      const userL = state.kategori[qi][ri];
+      const ok = userL === r.a;
+      const userText = userL === null ? 'Belum dijawab' : item.labels[userL];
+      return `<div class="review-row ${ok?'ok':'bad'}"><span class="tag">${ok?'Benar':'Kunci: '+item.labels[r.a]}</span><span>${esc(r.t)} &rarr; <em>${esc(userText)}</em></span></div>`;
+    }).join('');
+    return `<div class="review-item"><div class="rtext">${qi+1}. ${esc(item.q)}</div>${rows}</div>`;
+  }).join('');
+
+  return `
+  ${topbarHTML()}
+  ${stepperHTML('result')}
+  <div class="card score-hero">
+    <div class="score-ring" style="--pct:${s.pct}"><div class="inner"><strong>${s.pct}%</strong><span>${s.total}/${s.max}</span></div></div>
+    <div class="score-msg">${scoreMessage(s.pct)}</div>
+    <div class="score-name">${state.name ? esc(state.name) : 'Tanpa nama'}</div>
+    <div class="breakdown">
+      <div class="item"><strong>${s.scoreA}/${s.maxA}</strong><span>Bagian A</span></div>
+      <div class="item"><strong>${s.scoreB}/${s.maxB}</strong><span>Bagian B</span></div>
+      <div class="item"><strong>${s.scoreC}/${s.maxC}</strong><span>Bagian C</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="screen-title" style="font-size:18px;">Pembahasan Jawaban</div>
+    <div class="section-label">A. Pilihan Ganda</div>
+    ${reviewA}
+    <div class="section-label">B. Pilihan Ganda Kompleks</div>
+    ${reviewB}
+    <div class="section-label">C. Pilihan Ganda Kompleks (Kategori)</div>
+    ${reviewC}
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="backBtn">Kembali ke Bagian C</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="retryBtn">Kerjakan Ulang</button>
+    </div>
+  </div>
+  `;
+}
+
+/* ============ MAIN RENDER + EVENTS ============ */
+function render(){
+  const app = document.getElementById('app');
+  if(state.screen === 'start') app.innerHTML = renderStart();
+  else if(state.screen === 'A') app.innerHTML = renderA();
+  else if(state.screen === 'B') app.innerHTML = renderB();
+  else if(state.screen === 'C') app.innerHTML = renderC();
+  else if(state.screen === 'result') app.innerHTML = renderResult();
+  attachEvents();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+function attachEvents(){
+  const nameInput = document.getElementById('nameInput');
+  if(nameInput){
+    nameInput.addEventListener('input', e => { state.name = e.target.value; });
+  }
+  const startBtn = document.getElementById('startBtn');
+  if(startBtn) startBtn.addEventListener('click', () => { state.screen = 'A'; render(); });
+
+  document.querySelectorAll('.opt').forEach(el=>{
+    el.addEventListener('click', () => {
+      const qi = parseInt(el.dataset.q, 10);
+      const oi = parseInt(el.dataset.o, 10);
+      if(state.screen === 'A'){
+        state.pg[qi] = oi;
+      } else if(state.screen === 'B'){
+        const set = state.mcma[qi];
+        if(set.has(oi)) set.delete(oi); else set.add(oi);
+      }
+      render();
+    });
+  });
+
+  document.querySelectorAll('.chip').forEach(el=>{
+    el.addEventListener('click', () => {
+      const qi = parseInt(el.dataset.q, 10);
+      const ri = parseInt(el.dataset.r, 10);
+      const li = parseInt(el.dataset.l, 10);
+      state.kategori[qi][ri] = state.kategori[qi][ri] === li ? null : li;
+      render();
+    });
+  });
+
+  const nextBtn = document.getElementById('nextBtn');
+  if(nextBtn) nextBtn.addEventListener('click', () => {
+    if(state.screen === 'A') state.screen = 'B';
+    else if(state.screen === 'B') state.screen = 'C';
+    else if(state.screen === 'C') state.screen = 'result';
+    render();
+  });
+
+  const backBtn = document.getElementById('backBtn');
+  if(backBtn) backBtn.addEventListener('click', () => {
+    if(state.screen === 'A') state.screen = 'start';
+    else if(state.screen === 'B') state.screen = 'A';
+    else if(state.screen === 'C') state.screen = 'B';
+    else if(state.screen === 'result') state.screen = 'C';
+    render();
+  });
+
+  const retryBtn = document.getElementById('retryBtn');
+  if(retryBtn) retryBtn.addEventListener('click', () => {
+    state = {
+      screen: 'start',
+      name: state.name,
+      pg: Array(PG.length).fill(null),
+      mcma: MCMA.map(()=> new Set()),
+      kategori: KATEGORI.map(k => Array(k.rows.length).fill(null)),
+    };
+    render();
+  });
+}
+
+render();
+</script>
+</body>
+</html>
