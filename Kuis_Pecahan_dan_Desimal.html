@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kuis: Pecahan dan Desimal — Kelas VI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3F6F4;
+    --ink:#1B2430;
+    --navy:#16324F;
+    --navy-dark:#0F2338;
+    --teal:#2EC4B6;
+    --teal-dark:#1F9E92;
+    --amber:#FFC857;
+    --red:#E63946;
+    --red-soft:#FBE4E6;
+    --teal-soft:#E1F7F4;
+    --line:#DDE3E0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(22,50,79,0.07) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink);
+    font-family:'Nunito', sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:32px 16px 60px;
+  }
+  .app{
+    width:100%;
+    max-width:640px;
+  }
+  .masthead{
+    text-align:center;
+    margin-bottom:22px;
+  }
+  .masthead .eyebrow{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    color:var(--teal-dark);
+    font-size:0.95rem;
+    letter-spacing:0.02em;
+  }
+  .masthead h1{
+    font-family:'Fredoka', sans-serif;
+    font-weight:700;
+    font-size:1.85rem;
+    margin:4px 0 2px;
+    color:var(--navy);
+    line-height:1.2;
+  }
+  .masthead p{
+    margin:0;
+    color:#4B5A63;
+    font-size:0.98rem;
+  }
+
+  .card{
+    background:#fff;
+    border-radius:20px;
+    border:1px solid var(--line);
+    box-shadow:0 14px 32px rgba(22,50,79,0.10);
+    padding:30px 28px 26px;
+  }
+
+  /* ---- Start screen ---- */
+  #start-screen p.lead{
+    font-size:1.02rem;
+    line-height:1.55;
+    margin:0 0 20px;
+  }
+  #start-screen label{
+    display:block;
+    font-weight:700;
+    margin-bottom:8px;
+    color:var(--navy);
+  }
+  #start-screen input[type=text]{
+    width:100%;
+    padding:12px 14px;
+    font-size:1rem;
+    font-family:'Nunito', sans-serif;
+    border:2px solid var(--line);
+    border-radius:12px;
+    margin-bottom:20px;
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  #start-screen input[type=text]:focus{
+    border-color:var(--teal);
+  }
+  .meta-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+  }
+  .meta-pill{
+    background:var(--teal-soft);
+    color:var(--teal-dark);
+    font-weight:700;
+    font-size:0.85rem;
+    padding:6px 12px;
+    border-radius:999px;
+  }
+
+  button.primary{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:1.05rem;
+    color:#fff;
+    background:var(--navy);
+    border:none;
+    padding:14px 20px;
+    border-radius:12px;
+    width:100%;
+    cursor:pointer;
+    transition:transform .08s ease, background .15s ease;
+  }
+  button.primary:hover{ background:var(--navy-dark); }
+  button.primary:active{ transform:scale(0.98); }
+  button.primary:disabled{
+    background:#B9C2C8;
+    cursor:not-allowed;
+  }
+
+  /* ---- Quiz screen ---- */
+  .progress-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .progress-track{
+    flex:1;
+    height:8px;
+    background:var(--line);
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--teal);
+    border-radius:999px;
+    transition:width .3s ease;
+  }
+  .progress-label{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:0.9rem;
+    color:var(--navy);
+    white-space:nowrap;
+  }
+
+  .stimulus{
+    background:var(--teal-soft);
+    border-left:4px solid var(--teal);
+    padding:14px 16px;
+    border-radius:10px;
+    font-size:0.98rem;
+    line-height:1.5;
+    margin-bottom:14px;
+    color:#0E4A45;
+  }
+  .prompt{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:1.15rem;
+    color:var(--navy);
+    margin:0 0 18px;
+    line-height:1.4;
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-align:left;
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:12px;
+    padding:12px 14px;
+    font-family:'Nunito', sans-serif;
+    font-size:1rem;
+    font-weight:600;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .option:hover{ border-color:var(--teal); background:var(--teal-soft); }
+  .option .letter{
+    flex:none;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:var(--navy);
+    color:#fff;
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.9rem;
+  }
+  .option.correct{
+    border-color:var(--teal-dark);
+    background:var(--teal-soft);
+  }
+  .option.correct .letter{ background:var(--teal-dark); }
+  .option.wrong{
+    border-color:var(--red);
+    background:var(--red-soft);
+  }
+  .option.wrong .letter{ background:var(--red); }
+  .option.disabled{ cursor:default; }
+  .option.disabled:hover{ background:#fff; border-color:var(--line); }
+  .option.disabled.correct:hover{ background:var(--teal-soft); border-color:var(--teal-dark); }
+  .option.disabled.wrong:hover{ background:var(--red-soft); border-color:var(--red); }
+
+  .feedback{
+    margin-top:16px;
+    padding:14px 16px;
+    border-radius:12px;
+    font-size:0.95rem;
+    line-height:1.5;
+    display:none;
+  }
+  .feedback.show{ display:block; }
+  .feedback.ok{ background:var(--teal-soft); color:#0E4A45; }
+  .feedback.no{ background:var(--red-soft); color:#7A1E27; }
+  .feedback .verdict{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    display:block;
+    margin-bottom:4px;
+  }
+
+  .next-row{ margin-top:18px; display:none; }
+  .next-row.show{ display:block; }
+
+  /* ---- Result screen ---- */
+  #result-screen{ display:none; }
+  .score-hero{
+    text-align:center;
+    padding:8px 0 20px;
+  }
+  .score-hero .big{
+    font-family:'Fredoka', sans-serif;
+    font-weight:700;
+    font-size:3rem;
+    color:var(--navy);
+    line-height:1;
+  }
+  .score-hero .of{
+    font-size:1.05rem;
+    color:#4B5A63;
+    margin-top:4px;
+  }
+  .score-hero .msg{
+    margin-top:14px;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--teal-dark);
+  }
+  .recap{
+    border-top:1px solid var(--line);
+    margin-top:8px;
+    padding-top:16px;
+  }
+  .recap-item{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    padding:9px 0;
+    border-bottom:1px solid var(--line);
+    font-size:0.92rem;
+  }
+  .recap-item:last-child{ border-bottom:none; }
+  .recap-dot{
+    flex:none;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:0.8rem;
+    font-weight:800;
+    margin-top:1px;
+  }
+  .recap-dot.ok{ background:var(--teal-dark); }
+  .recap-dot.no{ background:var(--red); }
+  .recap-text b{ color:var(--navy); }
+
+  .restart-btn{
+    margin-top:22px;
+    background:transparent;
+    border:2px solid var(--navy);
+    color:var(--navy);
+  }
+  .restart-btn:hover{ background:var(--navy); color:#fff; }
+
+  footer{
+    text-align:center;
+    margin-top:20px;
+    font-size:0.82rem;
+    color:#8A9199;
+  }
+
+  @media (max-width:480px){
+    .card{ padding:22px 18px 20px; border-radius:16px; }
+    .masthead h1{ font-size:1.5rem; }
+    .score-hero .big{ font-size:2.4rem; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="masthead">
+    <div class="eyebrow">Matematika · Kelas VI SD/MI</div>
+    <h1>Kuis Pecahan dan Desimal</h1>
+    <p>10 soal, kerjakan satu per satu, langsung ketahuan benar atau salah.</p>
+  </div>
+
+  <div class="card">
+
+    <!-- START SCREEN -->
+    <div id="start-screen">
+      <p class="lead">Sebelum mulai, tuliskan namamu dulu ya. Setiap soal punya cerita singkat sebelum pertanyaannya — baca pelan-pelan sebelum menjawab.</p>
+      <label for="student-name">Nama siswa</label>
+      <input type="text" id="student-name" placeholder="Tulis namamu di sini" autocomplete="off" />
+      <div class="meta-row">
+        <span class="meta-pill">10 soal</span>
+        <span class="meta-pill">Perkalian &amp; pembagian pecahan</span>
+        <span class="meta-pill">Bilangan desimal</span>
+      </div>
+      <button class="primary" id="start-btn">Mulai Kuis</button>
+    </div>
+
+    <!-- QUIZ SCREEN -->
+    <div id="quiz-screen" style="display:none;">
+      <div class="progress-row">
+        <span class="progress-label" id="progress-label">Soal 1/10</span>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:10%;"></div></div>
+      </div>
+      <div class="stimulus" id="q-stimulus"></div>
+      <p class="prompt" id="q-prompt"></p>
+      <div class="options" id="q-options"></div>
+      <div class="feedback" id="q-feedback"></div>
+      <div class="next-row" id="next-row">
+        <button class="primary" id="next-btn">Soal Berikutnya</button>
+      </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen">
+      <div class="score-hero">
+        <div class="big" id="score-big">0/10</div>
+        <div class="of" id="score-name"></div>
+        <div class="msg" id="score-msg"></div>
+      </div>
+      <div class="recap" id="recap"></div>
+      <button class="primary restart-btn" id="restart-btn">Ulangi Kuis</button>
+    </div>
+
+  </div>
+
+  <footer>Latihan mandiri &middot; Bab Pecahan dan Desimal</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    stimulus: "Dalam kegiatan pramuka, setiap regu diberi 5 batang tali. Panjang setiap batang tali adalah 2/5 meter.",
+    prompt: "Berapa meter panjang tali seluruhnya yang diterima satu regu?",
+    options: ["2/5 meter", "1 meter", "2 meter", "10 meter"],
+    correct: 2,
+    ok: "Betul!",
+    no: "Belum tepat.",
+    explanation: "5 × 2/5 = 10/5 = 2 meter."
+  },
+  {
+    stimulus: "Nara memiliki 3/4 bagian dari sekantong permen. Di dalam kantong tersebut awalnya ada 8 permen.",
+    prompt: "Berapa banyak permen yang dimiliki Nara?",
+    options: ["4 permen", "6 permen", "7 permen", "8 permen"],
+    correct: 1,
+    ok: "Tepat sekali!",
+    no: "Coba lagi lain kali.",
+    explanation: "3/4 × 8 = 24/4 = 6 permen."
+  },
+  {
+    stimulus: "Ibu memiliki 2/3 loyang kue. Ia memberikan 1/2 dari kue tersebut kepada tetangga.",
+    prompt: "Berapa bagian loyang kue yang diberikan kepada tetangga?",
+    options: ["1/3 loyang", "1/2 loyang", "2/3 loyang", "1/6 loyang"],
+    correct: 0,
+    ok: "Keren, benar!",
+    no: "Belum pas.",
+    explanation: "1/2 × 2/3 = 2/6 = 1/3 loyang."
+  },
+  {
+    stimulus: "Sebuah pita sepanjang 6 meter akan dipotong-potong dengan panjang tiap potong 3/4 meter.",
+    prompt: "Berapa banyak potongan pita yang dapat dibuat?",
+    options: ["6 potong", "8 potong", "9 potong", "4 potong"],
+    correct: 1,
+    ok: "Benar!",
+    no: "Masih meleset.",
+    explanation: "6 : 3/4 = 6 × 4/3 = 24/3 = 8 potong."
+  },
+  {
+    stimulus: "Sepotong kue seluas 2/3 bagian akan dibagi rata kepada 4 orang.",
+    prompt: "Berapa bagian kue yang diterima setiap orang?",
+    options: ["1/6 bagian", "1/12 bagian", "1/4 bagian", "8/3 bagian"],
+    correct: 0,
+    ok: "Mantap, benar!",
+    no: "Belum tepat.",
+    explanation: "2/3 : 4 = 2/3 × 1/4 = 2/12 = 1/6 bagian."
+  },
+  {
+    stimulus: "Ibu memiliki 3/4 kg tepung. Tepung tersebut akan dimasukkan ke dalam kantong-kantong kecil, setiap kantong berisi 1/8 kg.",
+    prompt: "Berapa kantong yang dapat diisi penuh?",
+    options: ["3 kantong", "4 kantong", "6 kantong", "8 kantong"],
+    correct: 2,
+    ok: "Betul!",
+    no: "Coba hitung lagi.",
+    explanation: "3/4 : 1/8 = 3/4 × 8/1 = 24/4 = 6 kantong."
+  },
+  {
+    stimulus: "Bilangan desimal adalah bentuk lain dari pecahan dengan penyebut 10, 100, 1.000, dan seterusnya, yang ditulis menggunakan tanda koma.",
+    prompt: "Bentuk desimal dari pecahan 3/10 adalah ....",
+    options: ["0,3", "0,03", "3,0", "30,0"],
+    correct: 0,
+    ok: "Tepat!",
+    no: "Belum pas.",
+    explanation: "Penyebut 10 (satu angka nol) → satu angka di belakang koma: 3/10 = 0,3."
+  },
+  {
+    stimulus: "Sebuah pecahan, yaitu 7/100, akan diubah menjadi bentuk desimal.",
+    prompt: "Bentuk desimal yang tepat adalah ....",
+    options: ["0,7", "0,07", "0,007", "7,00"],
+    correct: 1,
+    ok: "Benar sekali!",
+    no: "Belum tepat.",
+    explanation: "Penyebut 100 (dua angka nol) → dua angka di belakang koma: 7/100 = 0,07."
+  },
+  {
+    stimulus: "Bilangan desimal 0,25 akan diubah menjadi pecahan paling sederhana.",
+    prompt: "Pecahan yang tepat adalah ....",
+    options: ["25/100", "1/4", "2/5", "1/2"],
+    correct: 1,
+    ok: "Tepat!",
+    no: "Masih kurang pas.",
+    explanation: "0,25 = 25/100, disederhanakan dengan membagi pembilang dan penyebut dengan 25 → 1/4."
+  },
+  {
+    stimulus: "Perhatikan bilangan-bilangan berikut: 0,812; 0,857; 0,835; 0,842.",
+    prompt: "Urutan bilangan tersebut dari yang terkecil ke terbesar adalah ....",
+    options: [
+      "0,812; 0,835; 0,842; 0,857",
+      "0,857; 0,842; 0,835; 0,812",
+      "0,812; 0,842; 0,835; 0,857",
+      "0,835; 0,812; 0,857; 0,842"
+    ],
+    correct: 0,
+    ok: "Benar, urutannya pas!",
+    no: "Belum urut dengan benar.",
+    explanation: "Bandingkan dari nilai tempat terbesar: satuan sama (0), persepuluhan sama (8), lalu perseratusan 1<3<4<5 → 0,812; 0,835; 0,842; 0,857."
+  }
+];
+
+const LETTERS = ["A","B","C","D"];
+
+let current = 0;
+let score = 0;
+let answered = false;
+let studentName = "";
+let log = []; // {chosen, correct, isRight}
+
+const startScreen = document.getElementById('start-screen');
+const quizScreen = document.getElementById('quiz-screen');
+const resultScreen = document.getElementById('result-screen');
+
+document.getElementById('start-btn').addEventListener('click', () => {
+  const nameInput = document.getElementById('student-name');
+  studentName = nameInput.value.trim();
+  startScreen.style.display = 'none';
+  quizScreen.style.display = 'block';
+  renderQuestion();
+});
+
+document.getElementById('next-btn').addEventListener('click', () => {
+  current++;
+  if (current >= QUESTIONS.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+});
+
+document.getElementById('restart-btn').addEventListener('click', () => {
+  current = 0; score = 0; answered = false; log = [];
+  resultScreen.style.display = 'none';
+  startScreen.style.display = 'block';
+});
+
+function renderQuestion(){
+  answered = false;
+  const q = QUESTIONS[current];
+  document.getElementById('progress-label').textContent = `Soal ${current+1}/${QUESTIONS.length}`;
+  document.getElementById('progress-fill').style.width = `${((current)/QUESTIONS.length)*100 + 10}%`;
+  document.getElementById('q-stimulus').textContent = q.stimulus;
+  document.getElementById('q-prompt').textContent = q.prompt;
+
+  const optsWrap = document.getElementById('q-options');
+  optsWrap.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="letter">${LETTERS[i]}</span><span>${opt}</span>`;
+    btn.addEventListener('click', () => selectAnswer(i));
+    optsWrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('q-feedback');
+  fb.className = 'feedback';
+  fb.innerHTML = '';
+  document.getElementById('next-row').className = 'next-row';
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.textContent = (current === QUESTIONS.length - 1) ? 'Lihat Hasil' : 'Soal Berikutnya';
+}
+
+function selectAnswer(i){
+  if (answered) return;
+  answered = true;
+  const q = QUESTIONS[current];
+  const isRight = (i === q.correct);
+  if (isRight) score++;
+  log.push({ chosen: i, correctIdx: q.correct, isRight });
+
+  const opts = document.querySelectorAll('#q-options .option');
+  opts.forEach((btn, idx) => {
+    btn.classList.add('disabled');
+    if (idx === q.correct) btn.classList.add('correct');
+    if (idx === i && !isRight) btn.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('q-feedback');
+  fb.classList.add('show', isRight ? 'ok' : 'no');
+  fb.innerHTML = `<span class="verdict">${isRight ? q.ok : q.no}</span>${q.explanation}`;
+
+  document.getElementById('next-row').classList.add('show');
+}
+
+function showResult(){
+  quizScreen.style.display = 'none';
+  resultScreen.style.display = 'block';
+
+  document.getElementById('score-big').textContent = `${score}/${QUESTIONS.length}`;
+  document.getElementById('score-name').textContent = studentName ? studentName : '';
+
+  let msg;
+  if (score === 10) msg = "Sempurna! Kamu menguasai materi ini dengan sangat baik.";
+  else if (score >= 8) msg = "Bagus sekali, hampir semua benar!";
+  else if (score >= 6) msg = "Sudah cukup baik, coba pelajari lagi bagian yang salah.";
+  else msg = "Ayo pelajari kembali materinya, lalu coba lagi.";
+  document.getElementById('score-msg').textContent = msg;
+
+  const recap = document.getElementById('recap');
+  recap.innerHTML = '';
+  log.forEach((entry, idx) => {
+    const q = QUESTIONS[idx];
+    const div = document.createElement('div');
+    div.className = 'recap-item';
+    div.innerHTML = `
+      <span class="recap-dot ${entry.isRight ? 'ok' : 'no'}">${entry.isRight ? '✓' : '✕'}</span>
+      <span class="recap-text">
+        <b>Soal ${idx+1}.</b> ${entry.isRight ? 'Benar' : `Jawabanmu ${LETTERS[entry.chosen]}, yang tepat ${LETTERS[entry.correctIdx]}`}.
+      </span>
+    `;
+    recap.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
